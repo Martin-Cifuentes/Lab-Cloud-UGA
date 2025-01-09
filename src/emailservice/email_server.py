@@ -162,7 +162,7 @@ def initStackdriverProfiling():
 
 
 if __name__ == '__main__':
-  logger.info('starting the email service in dummy mode.')
+  logger.info('starting the email service in dummy mode. [Version-2]')
 
   # Profiler
   try:
