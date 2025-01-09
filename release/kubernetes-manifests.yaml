@@ -485,14 +485,17 @@ metadata:
   name: redis-cart
   labels:
     app: redis-cart
+    version: v1
 spec:
   selector:
     matchLabels:
       app: redis-cart
+      version: v1
   template:
     metadata:
       labels:
         app: redis-cart
+        version: v1
     spec:
       securityContext:
         fsGroup: 1000
@@ -630,18 +633,34 @@ metadata:
   name: emailservice-v2
   labels:
     app: emailservice
+    version: v2  # Agregamos etiqueta de versión
 spec:
   selector:
     matchLabels:
       app: emailservice
+      version: v2  # Agregamos selector de versión
   template:
     metadata:
       labels:
         app: emailservice
+        version: v2  # Agregamos etiqueta de versión
     spec:
       serviceAccountName: emailservice
+      terminationGracePeriodSeconds: 5
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
       containers:
       - name: server
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
         image: us-central1-docker.pkg.dev/google-samples/microservices-demo/emailservice:v0.10.2
         ports:
         - containerPort: 8080
@@ -650,6 +669,23 @@ spec:
           value: "8080"
         - name: VERSION
           value: "v2"
+        - name: DISABLE_PROFILER
+          value: "1"
+        readinessProbe:
+          periodSeconds: 5
+          grpc:
+            port: 8080
+        livenessProbe:
+          periodSeconds: 5
+          grpc:
+            port: 8080
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
 ---
 apiVersion: apps/v1
 kind: Deployment
