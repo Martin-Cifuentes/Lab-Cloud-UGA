@@ -105,13 +105,13 @@ spec:
   http:
   - route:
     - destination:
-        host: emailservice-v1.default.svc.cluster.local
+        host: emailservice-v1
         port:
-          number: 8080
+          number: 5000
       weight: 75
     - destination:
-        host: emailservice-v2.default.svc.cluster.local
+        host: emailservice-v2
         port:
-          number: 8080
+          number: 5000
       weight: 25
 

@@ -554,17 +554,20 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: emailservice
+  name: emailservice-v1
   labels:
     app: emailservice
+    version: v1
 spec:
   selector:
     matchLabels:
       app: emailservice
+      version: v1
   template:
     metadata:
       labels:
         app: emailservice
+        version: v1
     spec:
       serviceAccountName: emailservice
       terminationGracePeriodSeconds: 5
@@ -607,16 +610,36 @@ spec:
             memory: 128Mi
 
 ---
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: emailservice
+  name: emailservice-v1
   labels:
     app: emailservice
+    version: v1
 spec:
   type: ClusterIP
   selector:
     app: emailservice
+    version: v1
+  ports:
+  - name: grpc
+    port: 5000
+    targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: emailservice-v2
+  labels:
+    app: emailservice
+    version: v2
+spec:
+  type: ClusterIP
+  selector:
+    app: emailservice
+    version: v2
   ports:
   - name: grpc
     port: 5000
